@@ -1,16 +1,20 @@
-const Engine = Matter.Engine;
+const Engine=Matter.Engine;
 const World = Matter.World;
 const Bodies = Matter.Bodies;
 const Constraint = Matter.Constraint;
 
 var engine, world;
-var holder,ball,ground;
+var holder,polygon,ground;
 var stand1,stand2;
-var ball;
+var polygon;
 var slingShot;
-var polygon_img;
+var pentagon_img, backgroundImg;
+var score=0;
+var bg = "light.jpg";
 function preload(){
- polygon_img=loadImage("polygon.png");
+ getBackgroundImage();
+ pentagon_img=loadImage("pentagon.png");
+ 
 }
 function setup() {
  createCanvas(900,400);
@@ -57,22 +61,25 @@ function setup() {
  //top
  blocks9 = new Block(700,95,30,40);
 
- //ball holder with slings
- ball = Bodies.circle(50,200,20);
- World.add(world,ball);
-
- slingShot = new SlingShot(this.ball,{x:100,y:200});
+ //polygon holder with slings
+ pentagon = Bodies.circle(50,200,20);
+ World.add(world,pentagon);
+ 
+ slingShot = new SlingShot(this.pentagon,{x:100,y:200});
 
 }
 function draw() {
- background(56,44,44); 
- 
+ //background(56,44,44); 
+ if(backgroundImg)
+ background(backgroundImg);
  //Engine.update(engine);
- //text(mouseX + ',' + mouseY, 10, 15);
+ text(mouseX + ',' + mouseY, 10, 15);
  textSize(20);
  fill("lightyellow");
- text("Drag the Hexagonal Stone and Release it, to launch it towards the blocks",100,30);
-
+ text("Drag the polygon to destroy the blocks",300,30);
+ text("SCORE : "+score,750,40);
+ textSize(10);
+ text("Press Space to get a second Chance to Play!!",650 ,350);
  ground.display();
  stand1.display();
  stand2.display();
@@ -112,13 +119,61 @@ function draw() {
  blocks9.display();
  fill("gold");
  imageMode(CENTER)
- image(polygon_img ,ball.position.x,ball.position.y,40,40);
+ image(pentagon_img ,pentagon.position.x,pentagon.position.y,40,40);
 
  slingShot.display();
+ block1.score();
+ block2.score();
+ block3.score();
+ block4.score();
+ block5.score();
+ block6.score();
+ block7.score();
+ block8.score();
+ block9.score();
+ block10.score();
+ block11.score();
+ block12.score();
+ block13.score();
+ block14.score();
+ block15.score();
+ block16.score();
+
+ blocks1.score();
+ blocks2.score();
+ blocks3.score();
+ blocks4.score();
+ blocks5.score();
+ blocks6.score();
+ blocks7.score();
+ blocks8.score();
+ blocks9.score();
 }
 function mouseDragged(){
- Matter.Body.setPosition(this.ball,{x:mouseX,y:mouseY});
+ Matter.Body.setPosition(this.pentagon,{x:mouseX,y:mouseY});
 }
 function mouseReleased(){
  slingShot.fly();
+}
+function keyPressed(){
+ if(keyCode === 32){
+ slingShot.attach(this.pentagon);
+ }
+}
+async function getBackgroundImage(){
+ var response = await fetch("http://worldtimeapi.org/api/timezone/Asia/Kolkata");
+ var responseJSON = await response.json();
+
+ var datetime = responseJSON.datetime;
+ var hour = datetime.slice(11, 13);
+ //console.log(hour);
+
+ if (hour >= 06 && hour <= 18) {
+ bg = "light.jpg";
+ } else {
+ bg = "dark.jpeg";
+ }
+
+ backgroundImg = loadImage(bg);
+ console.log(backgroundImg);
 }
